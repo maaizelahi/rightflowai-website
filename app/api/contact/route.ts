@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { RateLimiter } from 'rate-limiter-flexible';
-import { createContact } from '@/lib/db/contact';
-import { sendContactEmail } from '@/lib/email/contact';
-import { validateContactSchema } from '@/lib/validation/contact';
-import { rateLimiterOpts } from '@/lib/config/rate-limiter';
-
-// Initialize rate limiter
-const rateLimiter = new RateLimiter(rateLimiterOpts);
+import { handleContactSubmission } from '@/lib/api/contact';
+import { rateLimiter } from '@/lib/rate-limiter';
 
 export async function POST(request: Request) {
   try {
@@ -25,27 +19,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Parse and validate request body
+    // Parse request body
     const body = await request.json();
-    const validatedData = validateContactSchema(body);
 
-    // Save to database
-    const contact = await createContact({
-      ...validatedData,
-      ipAddress: ip,
-      status: 'pending'
-    });
+    // Handle contact submission
+    const result = await handleContactSubmission(body, ip);
 
-    // Send email notification
-    await sendContactEmail(validatedData);
-
-    // Update contact status
-    await createContact({
-      ...contact,
-      status: 'completed'
-    });
-
-    return NextResponse.json({ message: 'Message sent successfully' });
+    return NextResponse.json({ message: 'Message sent successfully', data: result });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

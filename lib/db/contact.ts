@@ -1,10 +1,7 @@
 import { sql } from '@vercel/postgres';
-import { ContactFormData } from '@/lib/types/contact';
+import { ContactRecord, ContactFormData, ContactStatus } from '@/lib/types/contact';
 
-export async function createContact(data: ContactFormData & {
-  ipAddress: string;
-  status: 'pending' | 'completed' | 'failed';
-}) {
+export async function createContact(data: Omit<ContactRecord, 'id' | 'createdAt'>) {
   const { name, email, message, company, ipAddress, status } = data;
   
   const result = await sql`
@@ -26,6 +23,17 @@ export async function createContact(data: ContactFormData & {
       ${status},
       NOW()
     )
+    RETURNING *
+  `;
+
+  return result.rows[0];
+}
+
+export async function updateContactStatus(id: number, status: ContactStatus) {
+  const result = await sql`
+    UPDATE contacts 
+    SET status = ${status}
+    WHERE id = ${id}
     RETURNING *
   `;
 
