@@ -1,13 +1,79 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { motion } from 'framer-motion';
-import { Mail, MessageSquare, Phone } from 'lucide-react';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion";
+import { Mail, Phone } from "lucide-react";
+import { toast } from "sonner";
+
+interface ContactFormData {
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  message: string;
+}
 
 export function Contact() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    message: "",
+  });
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit form");
+      }
+
+      toast.success("Message sent successfully", {
+        description: "We will get back to you soon.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        message: "",
+      });
+    } catch (error) {
+      toast.error("Failed to send message", {
+        description:
+          error instanceof Error ? error.message : "Please try again later",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,18 +102,59 @@ export function Contact() {
             viewport={{ once: true }}
           >
             <Card className="p-8">
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
-                  <Input placeholder="Your Name" />
-                  <Input type="email" placeholder="Email Address" />
-                  <Input placeholder="Company Name" />
+                  <Input
+                    name="name"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    minLength={2}
+                    maxLength={100}
+                  />
+                  <Input
+                    name="email"
+                    type="email"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <Input
+                    name="phone"
+                    type="tel"
+                    placeholder="Phone Number"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <Input
+                    name="company"
+                    placeholder="Company Name"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    required
+                    minLength={2}
+                    maxLength={100}
+                  />
                   <Textarea
+                    name="message"
                     placeholder="Tell us about your project"
                     className="h-32"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
+                    minLength={10}
+                    maxLength={1000}
                   />
                 </div>
-                <Button className="w-full bg-[#2A4494] hover:bg-[#1A3484]">
-                  Send Message
+                <Button
+                  type="submit"
+                  className="w-full bg-[#2A4494] hover:bg-[#1A3484]"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </Card>
@@ -83,15 +190,6 @@ export function Contact() {
                     <p className="font-medium">+91 9686011021</p>
                   </div>
                 </div>
-                {/* <div className="flex items-center space-x-4">
-                  <div className="bg-[#00A6FB]/10 p-3 rounded-lg">
-                    <MessageSquare className="h-6 w-6 text-[#00A6FB]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Live Chat</p>
-                    <p className="font-medium">Available 24/7</p>
-                  </div>
-                </div> */}
               </div>
             </div>
 

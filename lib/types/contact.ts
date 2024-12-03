@@ -1,19 +1,16 @@
 export interface ContactFormData {
   name: string;
   email: string;
+  phone?: string; // Add phone as optional
   company: string;
   message: string;
 }
 
+export type ContactStatus = "pending" | "completed" | "failed";
+
 export interface ContactRecord extends ContactFormData {
-  id?: number;
+  id: number;
   ipAddress: string;
   status: ContactStatus;
-  createdAt?: Date;
-}
-
-export type ContactStatus = 'pending' | 'completed' | 'failed';
-
-export interface ContactUpdateData {
-  status: ContactStatus;
+  createdAt: Date;
 }

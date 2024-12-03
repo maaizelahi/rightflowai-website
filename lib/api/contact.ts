@@ -1,32 +1,23 @@
 import { ContactFormData } from '@/lib/types/contact';
-import { createContact, updateContactStatus } from '@/lib/db/contact';
-import { sendContactEmail } from '@/lib/email/contact';
-import { validateContactSchema } from '@/lib/validation/contact';
+import { ApiResponse } from '@/lib/types/api';
 
-export async function handleContactSubmission(data: unknown, ipAddress: string) {
-  // Validate form data
-  const validatedData = validateContactSchema(data);
+interface ContactResponse {
+  message: string;
+  submittedAt: string;
+}
 
-  // Create initial contact record
-  const contact = await createContact({
-    ...validatedData,
-    ipAddress,
-    status: 'pending'
+export async function submitContactForm(data: ContactFormData): Promise<ApiResponse<ContactResponse>> {
+  const response = await fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
   });
 
-  try {
-    // Send email notification
-    await sendContactEmail(validatedData);
+  const result = await response.json();
 
-    // Update contact status to completed
-    const updatedContact = await updateContactStatus(contact.id, 'completed');
-
-    return { success: true, contact: updatedContact };
-  } catch (error) {
-    // Update contact status to failed
-    if (contact.id) {
-      await updateContactStatus(contact.id, 'failed');
-    }
-    throw error;
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to submit contact form');
   }
+
+  return result;
 }

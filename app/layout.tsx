@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from 'sonner';
 import { CalendlyProvider } from '@/components/calendly/context';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -29,7 +29,12 @@ export default function RootLayout({
           <CalendlyProvider>
             <div id="calendly-modal-root" />
             {children}
-            <Toaster />
+            <Toaster 
+              position="top-center"
+              richColors
+              expand
+              closeButton
+            />
           </CalendlyProvider>
         </ThemeProvider>
       </body>

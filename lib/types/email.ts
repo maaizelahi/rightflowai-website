@@ -1,20 +1,23 @@
-import { ContactFormData } from './contact';
-
 export interface EmailConfig {
   host: string;
   port: number;
   secure: boolean;
-  auth?: {
+  auth: {
     user: string;
     pass: string;
   };
 }
 
-export interface EmailTemplate<T = any> {
-  getSubject: (data: T) => string;
-  generateHtml: (data: T) => string;
+export interface ContactEmailData {
+  name: string;
+  email: string;
+  company: string;
+  message: string;
+  submittedAt: string;
 }
 
-export interface ContactEmailData extends ContactFormData {
-  submittedAt: string;
+export interface EmailOptions {
+  to: string;
+  subject: string;
+  html: string;
 }

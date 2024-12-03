@@ -1,41 +1,13 @@
-import { sql } from '@vercel/postgres';
-import { ContactRecord, ContactFormData, ContactStatus } from '@/lib/types/contact';
+import { ContactFormData } from '@/lib/types/contact';
 
-export async function createContact(data: Omit<ContactRecord, 'id' | 'createdAt'>) {
-  const { name, email, message, company, ipAddress, status } = data;
-  
-  const result = await sql`
-    INSERT INTO contacts (
-      name, 
-      email, 
-      company,
-      message, 
-      ip_address,
-      status,
-      created_at
-    ) 
-    VALUES (
-      ${name}, 
-      ${email}, 
-      ${company},
-      ${message}, 
-      ${ipAddress},
-      ${status},
-      NOW()
-    )
-    RETURNING *
-  `;
-
-  return result.rows[0];
-}
-
-export async function updateContactStatus(id: number, status: ContactStatus) {
-  const result = await sql`
-    UPDATE contacts 
-    SET status = ${status}
-    WHERE id = ${id}
-    RETURNING *
-  `;
-
-  return result.rows[0];
+export async function saveContactToDatabase(data: ContactFormData) {
+  try {
+    // Here you would typically save to your database
+    // Since we're not using Prisma, we'll just log the data
+    console.log('Contact form submission:', data);
+    return { success: true };
+  } catch (error) {
+    console.error('Database error:', error);
+    return { success: false, error };
+  }
 }

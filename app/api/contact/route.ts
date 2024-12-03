@@ -1,43 +1,56 @@
-import { NextResponse } from 'next/server';
-import { z } from 'zod';
-import { handleContactSubmission } from '@/lib/api/contact';
-import { rateLimiter } from '@/lib/rate-limiter';
+import { NextRequest, NextResponse } from "next/server";
+import { validateContactSchema } from "@/lib/validation/contact";
+import { rateLimiter } from "@/lib/rate-limiter";
+import { sendContactEmail } from "@/lib/email/service";
+import { corsHeaders } from "@/lib/api/headers";
+import { emailDefaults } from "@/lib/config/email";
+import { handleApiError } from "@/lib/middleware/error-handler";
+import { ApiError } from "@/lib/types/api";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  if (request.method === "OPTIONS") {
+    return new NextResponse(null, { headers: corsHeaders });
+  }
+
   try {
-    // Get client IP
+    // Rate limiting
     const forwarded = request.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(',')[0] : 'unknown';
+    const ip = forwarded ? forwarded.split(",")[0] : "unknown";
 
-    // Check rate limit
     try {
       await rateLimiter.consume(ip);
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Too many requests. Please try again later.' },
-        { status: 429 }
+    } catch {
+      throw new ApiError(
+        "Too many requests. Please try again later.",
+        "RATE_LIMIT_EXCEEDED",
+        429
       );
     }
 
-    // Parse request body
-    const body = await request.json();
+    // Parse and validate request
+    const body = await request.json().catch(() => {
+      throw new ApiError("Invalid request body", "INVALID_REQUEST", 400);
+    });
 
-    // Handle contact submission
-    const result = await handleContactSubmission(body, ip);
+    // Validate form data
+    const validatedData = validateContactSchema(body);
+    const emailData = {
+      ...validatedData,
+      submittedAt: new Date().toLocaleString(),
+    };
 
-    return NextResponse.json({ message: 'Message sent successfully', data: result });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid form data', details: error.errors },
-        { status: 400 }
-      );
-    }
+    // Send email with retry logic
+    await sendContactEmail(emailData);
 
-    console.error('Contact form error:', error);
     return NextResponse.json(
-      { error: 'Failed to send message. Please try again later.' },
-      { status: 500 }
+      {
+        success: true,
+        message: "Message sent successfully",
+        data: { submittedAt: emailData.submittedAt },
+      },
+      { headers: corsHeaders }
     );
+  } catch (error) {
+    return handleApiError(error);
   }
 }
