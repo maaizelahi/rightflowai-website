@@ -5,6 +5,7 @@ import { ContactFormData } from "@/lib/types/contact";
 import { toast } from "sonner";
 import { submitContactForm } from "@/lib/api/contact";
 import { validateContactForm } from "@/lib/validation/contact";
+import { handleFormSubmission } from "@/lib/utils/form";
 
 const initialFormState: ContactFormData = {
   name: "",
@@ -34,35 +35,26 @@ export function useContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const validation = validateContactForm(formData);
-      
-      if (!validation.success) {
-        const firstError = validation.errors?.fieldErrors[Object.keys(validation.errors.fieldErrors)[0]]?.[0];
-        throw new Error(firstError || "Please check all required fields");
+    
+    const result = await handleFormSubmission({
+      formData,
+      setIsSubmitting,
+      validateForm: validateContactForm,
+      submitForm: submitContactForm,
+      onSuccess: () => {
+        toast.success("Message sent successfully", {
+          description: "We will get back to you soon.",
+        });
+        resetForm();
+      },
+      onError: (error) => {
+        toast.error("Failed to send message", {
+          description: error.message,
+        });
       }
+    });
 
-      const response = await submitContactForm(validation.data!);
-      
-      if (!response.success) {
-        throw new Error(response.error || "Failed to submit form");
-      }
-
-      toast.success("Message sent successfully", {
-        description: "We will get back to you soon.",
-      });
-
-      resetForm();
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast.error("Failed to send message", {
-        description: error instanceof Error ? error.message : "Please try again later",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    return result;
   };
 
   return {

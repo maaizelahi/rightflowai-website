@@ -20,6 +20,11 @@ const contactSchema = z.object({
       "Invalid phone number format. Please use international format (e.g., +1234567890)"
     )
     .optional(),
+  company: z
+    .string()
+    .min(2, "Company name must be at least 2 characters")
+    .max(100, "Company name must be less than 100 characters")
+    .trim(),
   businessType: z
     .string()
     .min(2, "Business type must be at least 2 characters")
@@ -31,15 +36,7 @@ const contactSchema = z.object({
     .max(1000, "Challenge description must be less than 1000 characters")
     .trim(),
   preferredContact: z
-    .enum(["email", "phone"] as const, {
-      required_error: "Please select a preferred contact method",
-    }),
-  company: z
-    .string()
-    .min(2, "Company name must be at least 2 characters")
-    .max(100, "Company name must be less than 100 characters")
-    .trim()
-    .optional(),
+    .enum(["email", "phone"] as const)
 }).refine(
   (data) => {
     if (data.preferredContact === "phone" && !data.phone) {
@@ -53,15 +50,10 @@ const contactSchema = z.object({
   }
 );
 
-export function validateContactSchema(data: unknown): ContactFormData {
-  return contactSchema.parse(data);
+export function validateContactForm(data: unknown) {
+  return contactSchema.safeParse(data);
 }
 
-export function validateContactForm(data: unknown) {
-  const result = contactSchema.safeParse(data);
-  return {
-    success: result.success,
-    data: result.success ? result.data : undefined,
-    errors: !result.success ? result.error.flatten() : undefined,
-  };
+export function validateContactSchema(data: unknown): ContactFormData {
+  return contactSchema.parse(data);
 }
