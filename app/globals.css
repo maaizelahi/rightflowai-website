@@ -2,81 +2,107 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base theme variables */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Light theme defaults */
+  --background-primary: #f9fafb;
+  --background-secondary: #f3f4f6;
+  --background-tertiary: #e5e7eb;
+  
+  --foreground-primary: #111827;
+  --foreground-secondary: #374151;
+  --foreground-tertiary: #6b7280;
+  
+  --border-default: #e5e7eb;
+  --border-hover: #d1d5db;
+  --border-focus: #2A4494;
+  
+  /* Button colors - Light theme */
+  --button-primary: #2A4494;
+  --button-primary-hover: #1A3484;
+  --button-primary-text: #ffffff;
+  
+  --button-secondary: #00A6FB;
+  --button-secondary-hover: #0085c9;
+  --button-secondary-text: #ffffff;
+  
+  --button-outline: transparent;
+  --button-outline-hover: #f3f4f6;
+  --button-outline-text: #2A4494;
+  --button-outline-border: #2A4494;
 }
 
+/* Dark theme overrides using media query */
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-primary: #111827;
+    --background-secondary: #1f2937;
+    --background-tertiary: #374151;
+    
+    --foreground-primary: #f9fafb;
+    --foreground-secondary: #f3f4f6;
+    --foreground-tertiary: #9ca3af;
+    
+    --border-default: #374151;
+    --border-hover: #4b5563;
+    --border-focus: #5992ff;
+    
+    /* Button colors - Dark theme */
+    --button-primary: #5992ff;
+    --button-primary-hover: #90bcff;
+    --button-primary-text: #111827;
+    
+    --button-secondary: #1ac5ff;
+    --button-secondary-hover: #4dd2ff;
+    --button-secondary-text: #111827;
+    
+    --button-outline: transparent;
+    --button-outline-hover: #1f2937;
+    --button-outline-text: #5992ff;
+    --button-outline-border: #5992ff;
   }
 }
 
+/* Base styles using CSS variables */
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background-primary text-foreground-primary transition-colors duration-200;
+  }
+  
+  /* High contrast focus outlines for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-border-focus ring-offset-2 ring-offset-background-primary;
+  }
+}
+
+/* Component theme classes */
+@layer components {
+  .card {
+    @apply bg-background-secondary border border-border-default rounded-lg shadow-sm;
+  }
+  
+  /* Button base styles */
+  .button-base {
+    @apply font-medium px-4 py-2 rounded-lg transition-all duration-200
+           focus:ring-2 focus:ring-border-focus focus:ring-offset-2 focus:ring-offset-background-primary
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  /* Primary button */
+  .button-primary {
+    @apply button-base bg-[var(--button-primary)] hover:bg-[var(--button-primary-hover)] 
+           text-[var(--button-primary-text)] shadow-sm;
+  }
+  
+  /* Secondary button */
+  .button-secondary {
+    @apply button-base bg-[var(--button-secondary)] hover:bg-[var(--button-secondary-hover)]
+           text-[var(--button-secondary-text)] shadow-sm;
+  }
+  
+  /* Outline button */
+  .button-outline {
+    @apply button-base bg-[var(--button-outline)] hover:bg-[var(--button-outline-hover)]
+           text-[var(--button-outline-text)] border-2 border-[var(--button-outline-border)];
   }
 }
