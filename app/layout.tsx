@@ -11,10 +11,14 @@ export const metadata: Metadata = {
   title: 'RightFlow AI - Flow Forward with AI',
   description: 'Leading AI automation agency specializing in custom chatbots, automated agents, and workflow automation solutions.',
   icons: {
-    icon: ['/favicon.ico'],
-    apple: ['/apple-touch-icon.png'],
-    shortcut: ['/favicon.ico'],
-  },
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+    ]
+  }
 };
 
 export default function RootLayout({
@@ -24,11 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      </head>
+      <head />
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
