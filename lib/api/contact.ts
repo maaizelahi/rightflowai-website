@@ -1,5 +1,6 @@
 import { ContactFormData } from '@/lib/types/contact';
 import { ApiResponse } from '@/lib/types/api';
+import { apiRequest } from '@/lib/utils/api';
 
 interface ContactResponse {
   message: string;
@@ -7,20 +8,18 @@ interface ContactResponse {
 }
 
 export async function submitContactForm(data: ContactFormData): Promise<ApiResponse<ContactResponse>> {
-  const response = await fetch('/api/contact', {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await apiRequest<ContactResponse>('/api/contact', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.error || 'Failed to submit contact form');
+    return response;
+  } catch (error) {
+    console.error('Contact form submission error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to submit contact form',
+    };
   }
-
-  const result = await response.json();
-  return result;
 }

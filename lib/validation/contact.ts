@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ContactFormData } from "@/lib/types/contact";
+import { isValidPhoneNumber } from "@/lib/utils/form";
 
 const contactSchema = z.object({
   name: z
@@ -12,6 +13,13 @@ const contactSchema = z.object({
     .email("Invalid email address")
     .trim()
     .toLowerCase(),
+  phone: z
+    .string()
+    .refine(
+      (val) => !val || isValidPhoneNumber(val),
+      "Invalid phone number format. Please use international format (e.g., +1234567890)"
+    )
+    .optional(),
   businessType: z
     .string()
     .min(2, "Business type must be at least 2 characters")
@@ -26,19 +34,24 @@ const contactSchema = z.object({
     .enum(["email", "phone"] as const, {
       required_error: "Please select a preferred contact method",
     }),
-  phone: z
-    .string()
-    .regex(/^[0-9+\-\s()]*$/, "Invalid phone number format")
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number is too long")
-    .optional(),
   company: z
     .string()
     .min(2, "Company name must be at least 2 characters")
     .max(100, "Company name must be less than 100 characters")
     .trim()
     .optional(),
-});
+}).refine(
+  (data) => {
+    if (data.preferredContact === "phone" && !data.phone) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: "Phone number is required when phone is selected as preferred contact method",
+    path: ["phone"],
+  }
+);
 
 export function validateContactSchema(data: unknown): ContactFormData {
   return contactSchema.parse(data);

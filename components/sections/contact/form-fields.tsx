@@ -11,6 +11,8 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { ContactField } from "./types";
+import { contactFields } from "./config";
 
 interface FormFieldsProps {
   formData: ContactFormData;
@@ -24,88 +26,63 @@ export function FormFields({ formData, onChange }: FormFieldsProps) {
     onChange({ name: "preferredContact", value });
   };
 
+  const renderField = (field: ContactField) => {
+    switch (field.type) {
+      case "text":
+      case "email":
+      case "tel":
+        return (
+          <Input
+            id={field.name}
+            name={field.name}
+            type={field.type}
+            placeholder={field.placeholder}
+            value={formData[field.name as keyof ContactFormData] || ""}
+            onChange={onChange}
+          />
+        );
+      case "textarea":
+        return (
+          <Textarea
+            id={field.name}
+            name={field.name}
+            placeholder={field.placeholder}
+            className="h-32"
+            value={formData[field.name as keyof ContactFormData] || ""}
+            onChange={onChange}
+          />
+        );
+      case "select":
+        return (
+          <Select 
+            value={formData[field.name as keyof ContactFormData] as string} 
+            onValueChange={handleSelectChange}
+          >
+            <SelectTrigger id={field.name}>
+              <SelectValue placeholder={field.placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+              {field.options?.map(option => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          name="name"
-          placeholder="Your full name"
-          value={formData.name}
-          onChange={onChange}
-          required
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="your@email.com"
-          value={formData.email}
-          onChange={onChange}
-          required
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="businessType">Business Type</Label>
-        <Input
-          id="businessType"
-          name="businessType"
-          placeholder="e.g., Coach, Consultant, Course Creator"
-          value={formData.businessType}
-          onChange={onChange}
-          required
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="challenge">What would you like to automate?</Label>
-        <Textarea
-          id="challenge"
-          name="challenge"
-          placeholder="Describe the tasks or processes you'd like to automate..."
-          className="h-32"
-          value={formData.challenge}
-          onChange={onChange}
-          required
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="preferredContact">Preferred Contact Method</Label>
-        <Select 
-          value={formData.preferredContact} 
-          onValueChange={handleSelectChange}
-        >
-          <SelectTrigger id="preferredContact">
-            <SelectValue placeholder="How should we contact you?" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="email">Email</SelectItem>
-            <SelectItem value="phone">Phone</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {formData.preferredContact === "phone" && (
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number</Label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            placeholder="+1 (555) 000-0000"
-            value={formData.phone}
-            onChange={onChange}
-            required
-          />
+      {contactFields.map((field) => (
+        <div key={field.name} className="space-y-2">
+          <Label htmlFor={field.name}>{field.label}</Label>
+          {renderField(field)}
         </div>
-      )}
+      ))}
     </div>
   );
 }

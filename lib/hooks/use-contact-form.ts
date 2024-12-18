@@ -4,15 +4,16 @@ import { useState } from "react";
 import { ContactFormData } from "@/lib/types/contact";
 import { toast } from "sonner";
 import { submitContactForm } from "@/lib/api/contact";
+import { validateContactForm } from "@/lib/validation/contact";
 
 const initialFormState: ContactFormData = {
   name: "",
   email: "",
   phone: "",
+  company: "",
   businessType: "",
   challenge: "",
-  preferredContact: "email",
-  company: ""
+  preferredContact: "email"
 };
 
 export function useContactForm() {
@@ -36,18 +37,19 @@ export function useContactForm() {
     setIsSubmitting(true);
 
     try {
-      // Validate required fields
-      if (!formData.name || !formData.email || !formData.businessType || !formData.challenge) {
-        throw new Error("Please fill in all required fields");
-      }
-
-      // If phone is selected as preferred contact, validate phone number
-      if (formData.preferredContact === "phone" && !formData.phone) {
-        throw new Error("Phone number is required when selected as preferred contact method");
-      }
-
-      await submitContactForm(formData);
+      const validation = validateContactForm(formData);
       
+      if (!validation.success) {
+        const firstError = validation.errors?.fieldErrors[Object.keys(validation.errors.fieldErrors)[0]]?.[0];
+        throw new Error(firstError || "Please check all required fields");
+      }
+
+      const response = await submitContactForm(validation.data!);
+      
+      if (!response.success) {
+        throw new Error(response.error || "Failed to submit form");
+      }
+
       toast.success("Message sent successfully", {
         description: "We will get back to you soon.",
       });

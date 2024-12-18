@@ -1,11 +1,11 @@
 export interface ContactFormData {
   name: string;
   email: string;
+  phone?: string;
+  company: string;
   businessType: string;
   challenge: string;
   preferredContact: 'email' | 'phone';
-  phone?: string;
-  company?: string;
 }
 
 export type ContactStatus = "pending" | "completed" | "failed";
