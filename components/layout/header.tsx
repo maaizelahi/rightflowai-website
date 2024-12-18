@@ -17,7 +17,9 @@ export function Header() {
             href="/" 
             className="flex items-center space-x-2 transition-opacity hover:opacity-80"
           >
-            <Brain className="h-8 w-8 text-[#2A4494] rotate-90" />
+            <div className="relative w-8 h-8">
+              <Brain className="w-full h-full text-[#2A4494] rotate-90 transform transition-transform hover:rotate-180 duration-300" />
+            </div>
             <span className="font-bold text-xl">RightFlow AI</span>
           </Link>
 
