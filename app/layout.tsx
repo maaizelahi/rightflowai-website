@@ -12,13 +12,11 @@ export const metadata: Metadata = {
   description: 'Leading AI automation agency specializing in custom chatbots, automated agents, and workflow automation solutions.',
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.svg', type: 'image/svg+xml' }
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' }
     ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
-    ]
-  }
+    apple: [{ url: '/apple-touch-icon.png' }],
+  },
 };
 
 export default function RootLayout({
@@ -28,7 +26,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
