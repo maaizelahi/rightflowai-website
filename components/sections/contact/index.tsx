@@ -15,9 +15,10 @@ export function Contact() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Get in Touch</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Let's Automate Your Success</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Ready to transform your business with AI? Let's discuss how we can help.
+              Are you ready to reclaim your time and transform your business? I'm here to help you identify 
+              opportunities for automation and implement solutions that deliver results.
             </p>
           </motion.div>
         </div>

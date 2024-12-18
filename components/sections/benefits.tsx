@@ -1,49 +1,53 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, Clock, Users, Zap, ArrowUpRight, Activity } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Clock, Zap, Target, Users, ArrowUpRight, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useCalendly } from '@/components/calendly/context';
 
 const benefits = [
   {
-    icon: BarChart3,
-    title: "Increased Efficiency",
-    description: "Boost operational efficiency by up to 80% through intelligent automation",
-    metric: "80%"
+    icon: Clock,
+    title: "Save Precious Time",
+    description: "Reclaim 20+ hours every month through intelligent automation",
+    metric: "20+ hrs"
   },
   {
     icon: Zap,
-    title: "Reduced Costs",
-    description: "Cut operational costs by automating repetitive tasks",
-    metric: "40%"
+    title: "Boost Efficiency",
+    description: "Eliminate repetitive tasks and streamline operations",
+    metric: "80%"
   },
   {
-    icon: Clock,
-    title: "Time Savings",
-    description: "Save hundreds of work hours monthly with automated workflows",
-    metric: "200hrs"
+    icon: Target,
+    title: "Focus on Growth",
+    description: "Spend more time on strategic activities that matter",
+    metric: "3x"
   },
   {
     icon: Users,
-    title: "Enhanced Experience",
-    description: "Improve customer satisfaction with 24/7 intelligent support",
-    metric: "95%"
-  },
-  {
-    icon: ArrowUpRight,
-    title: "Scalability",
-    description: "Easily scale operations without proportional cost increase",
+    title: "Scale Without Hiring",
+    description: "Grow your business without expanding your team",
     metric: "∞"
   },
   {
+    icon: ArrowUpRight,
+    title: "Increase Revenue",
+    description: "Convert more leads with 24/7 automated support",
+    metric: "40%"
+  },
+  {
     icon: Activity,
-    title: "24/7 Availability",
-    description: "Provide round-the-clock service with automated systems",
-    metric: "100%"
+    title: "Work Smarter",
+    description: "Let AI handle routine tasks while you focus on strategy",
+    metric: "24/7"
   }
 ];
 
 export function Benefits() {
+  const { openCalendly } = useCalendly();
+
   return (
     <section id="benefits" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,14 +58,15 @@ export function Benefits() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose RightFlow AI?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Time, Reimagined</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Experience the transformative power of AI automation with measurable results
+              As a solopreneur, you juggle everything. With AI-powered automation, intelligent agents, and chatbots, 
+              you can eliminate the mundane and focus on what truly matters - growing your business and making an impact.
             </p>
           </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {benefits.map((benefit, index) => (
             <motion.div
               key={benefit.title}
@@ -86,6 +91,22 @@ export function Benefits() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center"
+        >
+          <Button 
+            size="lg"
+            onClick={openCalendly}
+            className="bg-[#2A4494] hover:bg-[#1A3484]"
+          >
+            Start Saving Time Today
+          </Button>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { ContactFormData } from "@/lib/types/contact";
 import { toast } from "sonner";
@@ -7,8 +9,10 @@ const initialFormState: ContactFormData = {
   name: "",
   email: "",
   phone: "",
-  company: "",
-  message: "",
+  businessType: "",
+  challenge: "",
+  preferredContact: "email",
+  company: ""
 };
 
 export function useContactForm() {
@@ -16,9 +20,10 @@ export function useContactForm() {
   const [formData, setFormData] = useState<ContactFormData>(initialFormState);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { name: string; value: string }
   ) => {
-    const { name, value } = e.target;
+    const name = 'target' in e ? e.target.name : e.name;
+    const value = 'target' in e ? e.target.value : e.value;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -31,8 +36,18 @@ export function useContactForm() {
     setIsSubmitting(true);
 
     try {
-      const result = await submitContactForm(formData);
+      // Validate required fields
+      if (!formData.name || !formData.email || !formData.businessType || !formData.challenge) {
+        throw new Error("Please fill in all required fields");
+      }
 
+      // If phone is selected as preferred contact, validate phone number
+      if (formData.preferredContact === "phone" && !formData.phone) {
+        throw new Error("Phone number is required when selected as preferred contact method");
+      }
+
+      await submitContactForm(formData);
+      
       toast.success("Message sent successfully", {
         description: "We will get back to you soon.",
       });
@@ -41,8 +56,7 @@ export function useContactForm() {
     } catch (error) {
       console.error("Form submission error:", error);
       toast.error("Failed to send message", {
-        description:
-          error instanceof Error ? error.message : "Please try again later",
+        description: error instanceof Error ? error.message : "Please try again later",
       });
     } finally {
       setIsSubmitting(false);

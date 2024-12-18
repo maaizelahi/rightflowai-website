@@ -14,12 +14,12 @@ export function BioSection() {
       <div className="bg-white rounded-lg shadow-lg p-8 text-center relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#00A6FB] opacity-5 rounded-full -mr-32 -mt-32" />
         <p className="text-lg text-gray-600 leading-relaxed relative z-10">
-          A pioneering force in AI automation and digital transformation, Maaiz brings over 15 years of expertise in 
-          revolutionizing business operations through intelligent technology solutions. As the founder of RightFlow AI, 
-          he has successfully led numerous Fortune 500 companies through their digital evolution, implementing 
-          cutting-edge AI solutions that drive efficiency and growth. His unique approach combines deep technical 
-          knowledge with strategic business acumen, ensuring our clients receive solutions that not only leverage 
-          the latest in AI technology but also deliver measurable business value.
+          Hi, I'm Maaiz Elahi—a software developer turned solopreneur advocate. With over 15 years of experience 
+          in software development and a deep understanding of AI technologies, I founded RightFlow AI to help 
+          solopreneurs like you reclaim your time and scale your impact. Being a solopreneur myself, I understand 
+          the challenges you face—wearing multiple hats, juggling tasks, and feeling like there's never enough time. 
+          My mission is to free you from repetitive tasks, so you can focus on growing your business and living 
+          your passion.
         </p>
       </div>
     </motion.div>

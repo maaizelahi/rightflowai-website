@@ -1,8 +1,6 @@
-'use client';
+"use client";
 
 import { Brain } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -19,11 +17,11 @@ export function Footer() {
             className="space-y-4"
           >
             <div className="flex items-center space-x-2">
-              <Brain className="h-8 w-8 text-[#00A6FB]" />
+              <Brain className="h-8 w-8 text-[#00A6FB] rotate-90" />
               <span className="font-bold text-xl">RightFlow AI</span>
             </div>
             <p className="text-gray-400">
-              Transforming businesses through intelligent automation solutions.
+              Reclaim your time. Automate your business. Focus on what matters most.
             </p>
           </motion.div>
 
@@ -38,7 +36,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#services"
+                  href="/#services"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Services
@@ -46,7 +44,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#benefits"
+                  href="/#benefits"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Benefits
@@ -54,7 +52,15 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#contact"
+                  href="/about"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#contact"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Contact
@@ -91,26 +97,23 @@ export function Footer() {
             </ul>
           </motion.div>
 
-          {/* <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <h3 className="font-semibold text-lg">Newsletter</h3>
-            <p className="text-gray-400">Stay updated with our latest news and updates.</p>
-            <div className="flex gap-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-gray-800 border-gray-700 text-white"
-              />
-              <Button className="bg-[#00A6FB] hover:bg-[#0096EB]">
-                Subscribe
-              </Button>
-            </div>
-          </motion.div> */}
+            <h3 className="font-semibold text-lg">Contact</h3>
+            <ul className="space-y-2">
+              <li className="text-gray-400">
+                Email: info@rightflowai.com
+              </li>
+              <li className="text-gray-400">
+                Phone: +91 9686011021
+              </li>
+            </ul>
+          </motion.div>
         </div>
 
         <motion.div
@@ -120,9 +123,7 @@ export function Footer() {
           viewport={{ once: true }}
           className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400"
         >
-          <p>
-            &copy; {new Date().getFullYear()} RightFlow AI. All rights reserved.
-          </p>
+          <p>&copy; {new Date().getFullYear()} RightFlow AI. All rights reserved.</p>
         </motion.div>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Phone } from "lucide-react";
+import { Mail, Phone, Clock, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function ContactInfo() {
@@ -37,22 +37,18 @@ export function ContactInfo() {
       </div>
 
       <div>
-        <h3 className="text-2xl font-semibold mb-4">FAQ</h3>
+        <h3 className="text-2xl font-semibold mb-4">Get in Touch</h3>
         <div className="space-y-4">
           <div>
-            <h4 className="font-medium mb-2">
-              How quickly can you implement a solution?
-            </h4>
+            <h4 className="font-medium mb-2">Submit a Message</h4>
             <p className="text-gray-600">
-              Most implementations take 2-4 weeks, depending on complexity and
-              requirements.
+              Fill out the form to tell us about your needs, and we'll get back to you within 24 hours.
             </p>
           </div>
           <div>
-            <h4 className="font-medium mb-2">Do you offer custom solutions?</h4>
+            <h4 className="font-medium mb-2">Schedule a Consultation</h4>
             <p className="text-gray-600">
-              Yes, all our solutions are customized to meet your specific
-              business needs and objectives.
+              Book a free 30-minute consultation to discuss your automation needs in detail.
             </p>
           </div>
         </div>

@@ -7,24 +7,37 @@ const contactSchema = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(100, "Name must be less than 100 characters")
     .trim(),
-  email: z.string().email("Invalid email address").trim().toLowerCase(),
+  email: z
+    .string()
+    .email("Invalid email address")
+    .trim()
+    .toLowerCase(),
+  businessType: z
+    .string()
+    .min(2, "Business type must be at least 2 characters")
+    .max(100, "Business type must be less than 100 characters")
+    .trim(),
+  challenge: z
+    .string()
+    .min(10, "Challenge description must be at least 10 characters")
+    .max(1000, "Challenge description must be less than 1000 characters")
+    .trim(),
+  preferredContact: z
+    .enum(["email", "phone"] as const, {
+      required_error: "Please select a preferred contact method",
+    }),
   phone: z
     .string()
     .regex(/^[0-9+\-\s()]*$/, "Invalid phone number format")
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number is too long")
-    .optional()
-    .or(z.literal("")), // Allow empty string
+    .optional(),
   company: z
     .string()
     .min(2, "Company name must be at least 2 characters")
     .max(100, "Company name must be less than 100 characters")
-    .trim(),
-  message: z
-    .string()
-    .min(10, "Message must be at least 10 characters")
-    .max(1000, "Message must be less than 1000 characters")
-    .trim(),
+    .trim()
+    .optional(),
 });
 
 export function validateContactSchema(data: unknown): ContactFormData {

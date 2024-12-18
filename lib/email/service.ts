@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import { generateContactEmailTemplate } from "./templates/contact";
+import { ContactFormData } from "../types/contact";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.zoho.in",
@@ -10,38 +12,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export interface EmailData {
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  company: string;
-  subject?: string;
-}
-
-export async function sendContactEmail(data: EmailData) {
-  const {
-    name,
-    email,
-    phone,
-    message,
-    company,
-    subject = "New Contact Form Submission",
-  } = data;
-
+export async function sendContactEmail(data: ContactFormData) {
   const mailOptions = {
     from: process.env.ZOHO_EMAIL,
     to: process.env.CONTACT_EMAIL_RECIPIENT,
-    subject,
-    html: `
-      <h2>New Contact Form Submission</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
-      <p><strong>Company:</strong> ${company}</p>
-      <p><strong>Message:</strong></p>
-      <p>${message}</p>
-    `,
+    subject: `New Contact Form Submission from ${data.name}`,
+    html: generateContactEmailTemplate(data),
   };
 
   try {

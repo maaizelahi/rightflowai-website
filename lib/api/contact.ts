@@ -9,15 +9,18 @@ interface ContactResponse {
 export async function submitContactForm(data: ContactFormData): Promise<ApiResponse<ContactResponse>> {
   const response = await fetch('/api/contact', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
     body: JSON.stringify(data),
   });
 
-  const result = await response.json();
-
   if (!response.ok) {
-    throw new Error(result.error || 'Failed to submit contact form');
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error || 'Failed to submit contact form');
   }
 
+  const result = await response.json();
   return result;
 }
